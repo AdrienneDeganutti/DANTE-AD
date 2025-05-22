@@ -2,7 +2,7 @@
 
 <div>
 
-This is the code implementation for the paper titled: "DANTE-AD: Dual-Vision Attention Network for Long-Term Audio Description" (Accepted to CVPR Workshop AI4CC)[arXiv](https://arxiv.org/abs/2503.24096).
+This is the code implementation for the paper titled: "DANTE-AD: Dual-Vision Attention Network for Long-Term Audio Description" (Accepted to CVPR Workshop AI4CC) [[arXiv]](https://arxiv.org/abs/2503.24096).
 
 <div>
 
