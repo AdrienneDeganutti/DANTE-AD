@@ -44,6 +44,12 @@ git clone https://github.com/Tiiiger/bert_score.git
 
 <div>
 
+## Dataset
+
+We provide our pre-processed video features and ground-truth annotations here: [Preprocessed CMD-AD](https://1drv.ms/f/c/f7c2537f9832b976/EndRsN0or4tFjwpTpy5cDzABXm35K7JbqbD24b5QJ1nx-A).
+
+<div>
+
 ## Acknowledgment
 
 Our implementation builds upon the following codebases:
