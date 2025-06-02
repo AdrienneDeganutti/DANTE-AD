@@ -34,6 +34,10 @@ git clone https://github.com/Tiiiger/bert_score.git
 
 ## Training
 
+```bash
+python main.py --config src/configs/training_config.json
+```
+
 <div>
 
 ## Evaluation
