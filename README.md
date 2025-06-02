@@ -16,7 +16,7 @@ This work proposes an enhanced video description model that improves context-awa
 
 ## Setup
 
-First, clone the repo and install required packages:
+- Clone the repo and install required packages:
 ```bash
 git clone https://github.com/AdrienneDeganutti/DANTE-AD.git
 cd DANTE-AD/
@@ -30,7 +30,7 @@ git clone https://github.com/Tiiiger/bert_score.git
 
 ```
 
-Then, update the paths to your dataset in ```src/configs/datasets/cmd_ad.yaml```
+- Update the paths to your dataset in ```src/configs/datasets/cmd_ad.yaml```
 
 <div>
 
