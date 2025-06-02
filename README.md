@@ -56,11 +56,11 @@ The dataset used in this paper is a reduced version of the [CMD-AD dataset](http
 
 To enhance computational efficency, we pre-compute the frame-level (CLIP) and scene-level (S4V) visual embeddings offline. We provide these pre-processed visual embeddings and ground-truth annotations here: [Preprocessed CMD-AD](https://1drv.ms/f/c/fd682d23eb414404/EuJTjSzt5qBOsRpH2CaX7MQBeJzIlBov2HXDkZwzYMP9iQ?e=wNlbgw).
 
-# Frame-Level Embeddings
+### Frame-Level Embeddings
 
 For the frame-level CLIP features, we process the following modules offline: EVA-CLIP feature extraction, Q-Former, positional embedding and Video Q-Former. Therefore, the features provided to replicate our work are the output of the Video Q-Former with shape ([1, 32, 768]). For reproducibility, the code used for these steps is taken from [Video-LLaMA](https://github.com/DAMO-NLP-SG/Video-LLaMA.git).
 
-# Scene-Level Embeddings
+### Scene-Level Embeddings
 
 The scene-level S4V features provided are processed from the action recognition module of [Side4Video](https://github.com/HJYao00/Side4Video) pre-trained on Kinetics-400. The S4V features we provide are the output of the Side4Video module after Global Average Pooling over each frame within the video sequence. The output features are of shape ([1, 1, 320]).
 
