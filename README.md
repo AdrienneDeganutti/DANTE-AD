@@ -19,16 +19,18 @@ This work proposes an enhanced video description model that improves context-awa
 First, clone the repo and install required packages:
 ```bash
 git clone https://github.com/AdrienneDeganutti/DANTE-AD.git
-cd Dante-AD/
+cd DANTE-AD/
 
 conda env create -f environment.yml
-conda activate dante_env
+conda activate dante
 
 cd eval_metrics
 git clone https://github.com/sks3i/pycocoevalcap.git
 git clone https://github.com/Tiiiger/bert_score.git
 
 ```
+
+Then, update the paths to your dataset in ```src/configs/datasets/cmd_ad.yaml```
 
 <div>
 
