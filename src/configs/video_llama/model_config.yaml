@@ -7,6 +7,7 @@ model:
   # i.e.  https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Finetuned
   llama_model: "meta-llama/Llama-2-7b-hf"
   ckpt: "/PATH/TO/YOUR/CKPT"
+  ckpt_2: ""  # Optional
   equip_audio_branch: False
 
 
