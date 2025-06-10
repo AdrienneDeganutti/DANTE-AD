@@ -36,16 +36,14 @@ git clone https://github.com/Tiiiger/bert_score.git
 
 ## Training
 
+- We provide our model checkpoint here [DANTE-AD model checkpoint](add link to onedrive).
+
 - Set the path to your checkpoint in ```src/configs/video_llama/model_config.yaml```
 
 To train, run:
 ```bash
 python main.py --config src/configs/training_config.json
 ```
-
-<div>
-
-## Evaluation
 
 <div>
 
