@@ -5,13 +5,8 @@
 import torch
 import torch.optim as optim
 from torch.optim.lr_scheduler import CosineAnnealingLR
-from src.utils.save_model_ckpt import save_model
-
-def compute_acc(logits, targets):
-    logits = torch.max(logits, -1)[1].data
-    batch_score = logits == targets
-    accuracy = torch.mean(batch_score.float())
-    return accuracy
+from src.utils.save_outputs import save_model
+from src.tasks.eval import eval_loop
 
 
 def mixed_precision(cfg, model):
@@ -27,7 +22,7 @@ def mixed_precision(cfg, model):
     return learning_rate, optimizer, scheduler
 
 
-def training_loop(model, args, data):
+def training_loop(model, args, train_data, val_data):
 
     learning_rate, optimizer, scheduler = mixed_precision(args, model)
 
@@ -35,20 +30,19 @@ def training_loop(model, args, data):
 
     for epoch in range(args.num_epochs):
         total_loss = 0
-        total_acc = 0
 
         print(f"Epoch {epoch+1}/{args.num_epochs}")
         
         model.train()
     
-        for batch in data:
+        for batch in train_data:
             vid_qformer_ft, annotations, filename, s4v_features = batch["vid_qformer_ft"], batch["caption"], batch["filename"], batch["s4v_features"]
         
             vid_qformer_ft = vid_qformer_ft.to('cuda:{}'.format(args.gpu_id))
             s4v_features = s4v_features.to('cuda:{}'.format(args.gpu_id))
 
             optimizer.zero_grad()
-            loss = model(vid_qformer_ft, annotations, s4v_features, filename, epoch)
+            loss = model(vid_qformer_ft, annotations, s4v_features)
             
             loss.backward()
             optimizer.step()
@@ -57,9 +51,16 @@ def training_loop(model, args, data):
         
         scheduler.step()
 
-        avg_loss = total_loss / len(data)
-        avg_acc = total_acc / len(data)
+        avg_loss = total_loss / len(train_data)
 
         print(f"Epoch {epoch+1}: Loss = {avg_loss:.4f}, LR = {scheduler.get_last_lr()[0]:.8f}")
 
         save_model(model, epoch)
+
+        if args.do_eval:
+            eval_loop(
+                model=model,
+                args=args,
+                data=val_data,
+                epoch=epoch
+            )
