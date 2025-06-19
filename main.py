@@ -21,11 +21,18 @@ def load_config(config_path):
     return config  
 
 def get_dataset(cfg):
-    train_dataset = VideoDataset(cfg.datasets_cfg['cmd_AD'], split='train')
-    train_dataloader = DataLoader(train_dataset, batch_size=cfg.args.batch_size, shuffle=False, num_workers=cfg.args.num_workers)
+    train_dataloader = None
+    val_dataloader = None
 
-    val_dataset = VideoDataset(cfg.datasets_cfg['cmd_AD'], split='val')
-    val_dataloader = DataLoader(val_dataset, batch_size=cfg.args.batch_size, shuffle=False, num_workers=cfg.args.num_workers)
+    if cfg.args.do_train:
+        train_dataset = VideoDataset(cfg.datasets_cfg['cmd_AD'], split='train')
+        train_dataloader = DataLoader(train_dataset, batch_size=cfg.args.batch_size,
+                                    shuffle=False, num_workers=cfg.args.num_workers)
+
+    if cfg.args.do_eval:
+        val_dataset = VideoDataset(cfg.datasets_cfg['cmd_AD'], split='val')
+        val_dataloader = DataLoader(val_dataset, batch_size=cfg.args.batch_size,
+                                    shuffle=False, num_workers=cfg.args.num_workers)
 
     return train_dataloader, val_dataloader
 
@@ -42,10 +49,11 @@ def main(config):
         training_loop(
             model=model,
             args=cfg.args,
-            data=train_dataset
+            train_data=train_dataset,
+            val_data=val_dataset
         )
     
-    if cfg.args.do_eval:
+    elif cfg.args.do_eval and not cfg.args.do_train:
         eval_loop(
             model=model,
             args=cfg.args,
