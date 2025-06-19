@@ -30,7 +30,7 @@ def eval_loop(model, args, data, epoch):
             accuracy = compute_acc(generated_ids, targets)
             total_acc += accuracy.item()
 
-            output_dir = log_predictions(args, generated_texts, filename, annotations, epoch)
+            log_predictions(args, generated_texts, filename, annotations, epoch)
         
         avg_acc = total_acc / len(data)
         print(f"Validation accuracy = {avg_acc:.4f}")
