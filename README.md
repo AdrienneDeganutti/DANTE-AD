@@ -40,6 +40,8 @@ git clone https://github.com/Tiiiger/bert_score.git
 
 - Set the path to your checkpoint in ```src/configs/video_llama/model_config.yaml```
 
+- Set ```do_train: true``` in ```src/configs/training_config.json```
+
 To train, run:
 ```bash
 python main.py --config src/configs/training_config.json
@@ -48,6 +50,8 @@ python main.py --config src/configs/training_config.json
 <div>
 
 ## Inference
+
+- Set ```do_train: false``` and ```do_eval: true``` in ```src/configs/training_config.json```
 
 <div>
 
