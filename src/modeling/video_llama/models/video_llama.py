@@ -119,7 +119,7 @@ class VideoLLAMA(Blip2Base):
         console.print(table)
     
 
-    def forward(self, vid_qformer_ft, annotation, s4v_ft, filename, epoch):
+    def forward(self, vid_qformer_ft, annotation, s4v_ft):
         
         # EVA-CLIP features
         vid_qformer_ft = vid_qformer_ft.squeeze(dim=1)
@@ -201,11 +201,10 @@ class VideoLLAMA(Blip2Base):
                     inputs_embeds=inputs_embeds,
                     attention_mask=attention_mask,
                     max_new_tokens=self.max_txt_len,
-                    num_beams=3  # Beam search for better quality
+                    num_beams=3 
                 )
             
             generated_texts = self.llama_tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
-            print(generated_texts)
 
             # Padding for accuracy computation
             if generated_ids.shape[1] > to_regress_tokens.input_ids.shape[1]:
