@@ -36,7 +36,7 @@ git clone https://github.com/Tiiiger/bert_score.git
 
 ## Training
 
-- We provide our model checkpoint here [DANTE-AD model checkpoint](add link to onedrive).
+- To recreate our training pipeline using our pre-computed features (see Dataset section below), download the pre-trained weights for the frame-level features projection layer from [Movie-Llama2 weights](https://github.com/TengdaHan/AutoAD/tree/main/autoad_iii).
 
 - Set the path to your checkpoint in ```src/configs/video_llama/model_config.yaml```
 
@@ -50,6 +50,8 @@ python main.py --config src/configs/training_config.json
 <div>
 
 ## Inference
+
+- We provide our model checkpoint here [DANTE-AD model checkpoint](add link to onedrive).
 
 - Set ```do_train: false``` and ```do_eval: true``` in ```src/configs/training_config.json```
 
