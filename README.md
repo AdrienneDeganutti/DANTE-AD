@@ -23,11 +23,6 @@ cd DANTE-AD/
 
 conda env create -f environment.yml
 conda activate dante
-
-cd eval_metrics
-git clone https://github.com/sks3i/pycocoevalcap.git
-git clone https://github.com/Tiiiger/bert_score.git
-
 ```
 
 - Update the paths to your dataset in ```src/configs/datasets/cmd_ad.yaml```
@@ -49,11 +44,13 @@ python main.py --config src/configs/training_config.json
 
 <div>
 
-## Inference
+## Evaluation
 
 - We provide our model checkpoint here [DANTE-AD model checkpoint](add link to onedrive).
 
 - Set ```do_train: false``` and ```do_eval: true``` in ```src/configs/training_config.json```
+
+**DANTE-AD output on the CMD-AD dataset: [eval-results.tsv](https://onedrive.live.com/personal/fd682d23eb414404/_layouts/15/download.aspx?SourceUrl=%2Fpersonal%2Ffd682d23eb414404%2FDocuments%2FDANTE%2DAD%2Fdante%2Dad%2Dvalidation%2Dpredictions%2Etsv)**
 
 <div>
 
@@ -95,7 +92,7 @@ If you find our project useful, please kindly cite the paper with the following 
 @article{deganutti2025dante,
   title={DANTE-AD: Dual-Vision Attention Network for Long-Term Audio Description},
   author={Deganutti, Adrienne and Hadfield, Simon and Gilbert, Andrew},
-  journal={arXiv preprint arXiv:2503.24096},
+  booktitle={IEEE/CVF Conference on Computer Vision and Pattern Recognition - Workshop on AI for Content Creation (AI4CC'25)},
   year={2025}
 }
 ```
