@@ -46,11 +46,11 @@ python main.py --config src/configs/training_config.json
 
 ## Evaluation
 
-- We provide our model checkpoint here [DANTE-AD model checkpoint](add link to onedrive).
+- We provide our model checkpoint here [DANTE-AD model checkpoint](https://1drv.ms/f/c/fd682d23eb414404/EuJTjSzt5qBOsRpH2CaX7MQBeJzIlBov2HXDkZwzYMP9iQ?e=wNlbgw).
 
 - Set ```do_train: false``` and ```do_eval: true``` in ```src/configs/training_config.json```
 
-**DANTE-AD output on the CMD-AD dataset: [eval-results.tsv](https://onedrive.live.com/personal/fd682d23eb414404/_layouts/15/download.aspx?SourceUrl=%2Fpersonal%2Ffd682d23eb414404%2FDocuments%2FDANTE%2DAD%2Fdante%2Dad%2Dvalidation%2Dpredictions%2Etsv)**
+**DANTE-AD output on the CMD-AD dataset: [eval-results.tsv](https://1drv.ms/f/c/fd682d23eb414404/EuJTjSzt5qBOsRpH2CaX7MQBeJzIlBov2HXDkZwzYMP9iQ?e=wNlbgw)**
 
 <div>
 
