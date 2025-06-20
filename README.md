@@ -48,7 +48,14 @@ python main.py --config src/configs/training_config.json
 
 - We provide our model checkpoint here [DANTE-AD model checkpoint](https://1drv.ms/f/c/fd682d23eb414404/EuJTjSzt5qBOsRpH2CaX7MQBeJzIlBov2HXDkZwzYMP9iQ?e=wNlbgw).
 
+- Set the path to the checkpoint in ```src/configs/video_llama/model_config.yaml```
+
 - Set ```do_train: false``` and ```do_eval: true``` in ```src/configs/training_config.json```
+
+To evaluate, run:
+```bash
+python main.py --config src/configs/training_config.json
+```
 
 **DANTE-AD output on the CMD-AD dataset: [eval-results.tsv](https://1drv.ms/f/c/fd682d23eb414404/EuJTjSzt5qBOsRpH2CaX7MQBeJzIlBov2HXDkZwzYMP9iQ?e=wNlbgw)**
 
