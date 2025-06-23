@@ -57,7 +57,8 @@ def main(config):
         eval_loop(
             model=model,
             args=cfg.args,
-            data=val_dataset
+            data=val_dataset,
+            epoch=None
         )
 
 
