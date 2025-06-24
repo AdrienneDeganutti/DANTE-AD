@@ -1,0 +1,41 @@
+{
+  "do_train": true,
+  "do_eval": true,
+  
+  "drop_path_rate": 0,
+  "use_grad_checkpoint": true,
+  "vit_precision": "fp16",
+    
+  "num_epochs": 2,
+  "learning_rate": 3e-5,
+  "batch_size": 1,
+
+  "frozen_llama_proj": false,
+  "freeze_s4v_proj": false,
+  "freeze_crossattention": false,
+  "crossattention_decoder": "sequential",
+
+  "num_query_token": 32,
+  "cross_attention_freq": 2,
+  "llama_model": "meta-llama/Llama-2-7b-hf",
+  "max_txt_len": 30,
+  "end_sym": "\n",
+  "low_resource": false,
+  "device_8bit": 0,
+  "num_workers": 4,
+
+  "llama_proj_model": "",
+  "fusion_header_type": "seqTransf",
+  "max_frame_pos": 32,
+  "fusion_head_layers": 2,
+  "num_video_query_token": 32,
+  
+  "output_ckpt_path": "/location/to/save/ckpts/",
+  "output_results_path": "/location/to/save/predictions/",
+
+  "video_llama_cfg_path": "src/configs/video_llama/model_config.yaml",
+  "model_type": "llama_v2",
+  "gpu-id": 0,
+  "options": null
+}
+  
