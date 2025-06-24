@@ -17,6 +17,8 @@ def save_model(model, epoch):
 
 def log_predictions(args, decoded_text, filename, ground_truth, epoch):
 
+    epoch = 'inf' if epoch is None else epoch
+
     output_dir = join(args.output_results_path, f'epoch_{epoch}')
     os.makedirs(output_dir, exist_ok=True)
     output_file = join(output_dir, 'eval_predictions.tsv')
