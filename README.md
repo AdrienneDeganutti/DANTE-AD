@@ -46,7 +46,7 @@ python main.py --config src/configs/training_config.json
 
 ## Evaluation
 
-- We provide our model checkpoint here [DANTE-AD model checkpoint](https://1drv.ms/f/c/fd682d23eb414404/EuJTjSzt5qBOsRpH2CaX7MQBeJzIlBov2HXDkZwzYMP9iQ?e=wNlbgw).
+- We provide our model checkpoint here [DANTE-AD model checkpoint](https://1drv.ms/u/c/fd682d23eb414404/EWrhWYNLGJ9JutiV1hCIY5sB3eoTD_1zMex0nZA5pIOkSw).
 
 - Set the path to the checkpoint in ```src/configs/video_llama/model_config.yaml```
 
@@ -57,7 +57,7 @@ To evaluate, run:
 python main.py --config src/configs/training_config.json
 ```
 
-**DANTE-AD output on the CMD-AD dataset: [eval-results.tsv](https://1drv.ms/f/c/fd682d23eb414404/EuJTjSzt5qBOsRpH2CaX7MQBeJzIlBov2HXDkZwzYMP9iQ?e=wNlbgw)**
+**DANTE-AD output on the CMD-AD dataset: [eval-results.tsv](https://1drv.ms/u/c/fd682d23eb414404/ETQvWuMKDMFPnJOg0MouhnUBHeNiZeZOFLjlLxL5JuXieg)**
 
 <div>
 
@@ -71,7 +71,7 @@ The dataset used in this paper is a reduced version of the [CMD-AD dataset](http
 | Train AD segments  | 93,952        | 89,798        |
 | Eval AD segments   | 7,316         | 7,075         |
 
-To enhance computational efficency, we pre-compute the frame-level (CLIP) and scene-level (S4V) visual embeddings offline. We provide these pre-processed visual embeddings and ground-truth annotations here: [Preprocessed CMD-AD](https://1drv.ms/f/c/fd682d23eb414404/EuJTjSzt5qBOsRpH2CaX7MQBeJzIlBov2HXDkZwzYMP9iQ?e=wNlbgw).
+To enhance computational efficency, we pre-compute the frame-level (CLIP) and scene-level (S4V) visual embeddings offline. We provide these pre-processed visual embeddings and ground-truth annotations here: [Preprocessed CMD-AD](https://1drv.ms/f/c/fd682d23eb414404/EoazITd9Gs1GoC94BA54Pk0BK6pwCdGaPYBkVXfJN0DQTw).
 
 ### Frame-Level Embeddings
 
