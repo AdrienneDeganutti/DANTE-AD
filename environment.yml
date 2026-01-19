@@ -1,4 +1,4 @@
-name: dante-test
+name: dante
 channels:
   - defaults
 dependencies:
