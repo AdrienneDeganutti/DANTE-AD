@@ -162,6 +162,7 @@ This work builds upon the following projects:
 - [Video-LLaMA](https://github.com/DAMO-NLP-SG/Video-LLaMA.git): An Instruction-tuned Audio-Visual Language Model for Video Understanding
 - [AutoAD](https://github.com/TengdaHan/AutoAD): Movie Description in Context
 - [GRIT](https://github.com/davidnvq/grit): Faster and Better Image-Captioning Transformer
+- [Side4Video](https://github.com/HJYao00/Side4Video): Spatial-Temporal Side Network for Memory-Efficient Image-to-Video Transfer Learning
 
 <div>
 
