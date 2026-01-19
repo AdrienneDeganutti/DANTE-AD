@@ -118,7 +118,7 @@ class CaptionGenerator(nn.Module):
             mask_y = torch.zeros((b_s, 1, 1, V), dtype=torch.bool, device=self.device)
 
             for layer in self.layers:
-                out, self_attn_weights = layer(x, y, mask_x, mask_y, mask_pad)
+                x, self_attn_weights = layer(x, y, mask_x, mask_y, mask_pad)
         
 
         elif self.decoder_name == 'sequential':
@@ -129,9 +129,9 @@ class CaptionGenerator(nn.Module):
             mask_y2 = torch.zeros((b_s, 1, 1, y2.shape[1]), dtype=torch.bool, device=self.device)
 
             for layer in self.layers:
-                out, self_attn_weights = layer(x, y1, y2, mask_x, mask_y1, mask_y2, mask_pad)
+                x, self_attn_weights = layer(x, y1, y2, mask_x, mask_y1, mask_y2, mask_pad)
         
-        return out
+        return x
     
 
     def eval(self, img_embeds, s4v_features, bos_embed, max_length=20):
@@ -160,7 +160,7 @@ class CaptionGenerator(nn.Module):
 
                 with torch.no_grad():
                     for layer in self.layers:
-                        out, self_attn_weights = layer(x, y, mask_x, mask_y, mask_pad=None)
+                        x, self_attn_weights = layer(x, y, mask_x, mask_y, mask_pad=None)
             
             elif self.decoder_name == 'sequential':
                 y1 = s4v_features
@@ -169,9 +169,9 @@ class CaptionGenerator(nn.Module):
                 mask_y2 = torch.zeros((b_s, 1, 1, y2.shape[1]), dtype=torch.bool, device=self.device)
 
                 for layer in self.layers:
-                    out, self_attn_weights = layer(x, y1, y2, mask_x, mask_y1, mask_y2, mask_pad=None)
+                    x, self_attn_weights = layer(x, y1, y2, mask_x, mask_y1, mask_y2, mask_pad=None)
 
-            logits = out[:, -1, :].unsqueeze(1)
+            logits = x[:, -1, :].unsqueeze(1)
 
             generated_embeds = torch.cat([generated_embeds, logits], dim=1)
 
