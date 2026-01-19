@@ -20,17 +20,17 @@ def load_config(config_path):
     config = load_dante_args(config_path)
     return config  
 
-def get_dataset(cfg):
+def get_dataset(cfg, vis_processor):
     train_dataloader = None
     val_dataloader = None
 
     if cfg.args.do_train:
-        train_dataset = VideoDataset(cfg.datasets_cfg['cmd_AD'], split='train')
+        train_dataset = VideoDataset(cfg.args, cfg.datasets_cfg['cmd_AD'], vis_processor, split='train')
         train_dataloader = DataLoader(train_dataset, batch_size=cfg.args.batch_size,
                                     shuffle=False, num_workers=cfg.args.num_workers)
 
     if cfg.args.do_eval:
-        val_dataset = VideoDataset(cfg.datasets_cfg['cmd_AD'], split='val')
+        val_dataset = VideoDataset(cfg.args, cfg.datasets_cfg['cmd_AD'], vis_processor, split='val')
         val_dataloader = DataLoader(val_dataset, batch_size=cfg.args.batch_size,
                                     shuffle=False, num_workers=cfg.args.num_workers)
 
@@ -43,7 +43,10 @@ def main(config):
     model_cls = registry.get_model_class(cfg.model_cfg.arch)
     model = model_cls.from_config(cfg.model_cfg, cfg.args).to('cuda:{}'.format(cfg.args.gpu_id))
     
-    train_dataset, val_dataset = get_dataset(cfg)
+    vis_processor_cfg = cfg.datasets_cfg.cmd_AD.vis_processor.train
+    vis_processor = registry.get_processor_class(vis_processor_cfg.name).from_config(vis_processor_cfg)
+
+    train_dataset, val_dataset = get_dataset(cfg, vis_processor)
 
     if cfg.args.do_train:
         training_loop(
