@@ -1,6 +1,6 @@
 # Data Preparation
 
-This directory contains scripts for preparing and processing video data.
+This directory contains the code for generating the S4V features on the CMD-AD dataset.
 
 ## Setup
 
@@ -31,3 +31,7 @@ python data_preparation/run_s4v.py \
     --weights ckpt/k400_vitb16_f8_82.5.pt \
     --output_dir data_preparation/output/
 ```
+
+## Acknowledgement
+
+The original code can be found here: [Side4Video](https://github.com/HJYao00/Side4Video): Spatial-Temporal Side Network for Memory-Efficient Image-to-Video Transfer Learning 
