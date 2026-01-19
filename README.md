@@ -45,6 +45,19 @@ pip install torch torchvision --index-url https://download.pytorch.org
 
 - Update the paths to your dataset in ```src/configs/datasets/cmd_ad.yaml```
 
+```bash
+CMD-AD/
+├── labels/                    # Ground-truth AD annotations
+│   ├── train.tsv
+│   └── eval.tsv
+├── s4v_features/              # Scene-level S4V embeddings
+│   └── *.pt
+├── video_qformer_features/    # Frame-level Video Q-Former embeddings (for offline feature loading)
+│   └── *.pt
+├── raw_videos/                # Segmented CMD-AD videos (for online feature extraction)
+│   └── *.mkv
+```
+
 <div>
 
 ## Data Preparation
