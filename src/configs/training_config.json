@@ -1,8 +1,13 @@
 {
   "do_train": true,
   "do_eval": true,
+
+  "load_frame_features": true,
   
   "drop_path_rate": 0,
+  "img_size": 224,
+  "vit_model": "eva_clip_g",
+  "q_former_model": "https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xxl.pth",
   "use_grad_checkpoint": true,
   "vit_precision": "fp16",
     
@@ -10,12 +15,16 @@
   "learning_rate": 3e-5,
   "batch_size": 1,
 
+  "freeze_vit": true,
+  "freeze_qformer": false,
+  "frozen_video_Qformer": false,
   "frozen_llama_proj": false,
   "freeze_s4v_proj": false,
   "freeze_crossattention": false,
   "crossattention_decoder": "sequential",
 
   "num_query_token": 32,
+  "num_subsampled_frames": 8,
   "cross_attention_freq": 2,
   "llama_model": "meta-llama/Llama-2-7b-hf",
   "max_txt_len": 30,
