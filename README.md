@@ -47,15 +47,25 @@ pip install torch torchvision --index-url https://download.pytorch.org
 
 ```bash
 CMD-AD/
-├── labels/                    # Ground-truth AD annotations
+├── labels/                          # Ground-truth AD annotations
 │   ├── train.tsv
 │   └── eval.tsv
-├── s4v_features/              # Scene-level S4V embeddings
-│   └── *.pt
-├── video_qformer_features/    # Frame-level Video Q-Former embeddings (for offline feature loading)
-│   └── *.pt
-├── raw_videos/                # Segmented CMD-AD videos (for online feature extraction)
-│   └── *.mkv
+├── s4v_features/                    # Scene-level S4V embeddings
+│   ├── 2011/
+│   │   └── *.pt
+│   ├── ...
+│   └── 2019/
+├── video_qformer_features/          # Frame-level Video Q-Former embeddings (offline loading)
+│   ├── 2011/
+│   │   └── *.pt
+│   ├── ...
+│   └── 2019/
+├── videos/                          # Segmented CMD-AD videos (online feature extraction)
+│   ├── 2011/
+│   │   └── *.mkv
+│   ├── ...
+│   └── 2019/
+
 ```
 
 <div>
