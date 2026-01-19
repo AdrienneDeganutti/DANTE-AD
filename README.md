@@ -76,7 +76,7 @@ CMD-AD/
 
 The scene-level S4V features provided are processed from the action recognition module of [Side4Video](https://github.com/HJYao00/Side4Video) pre-trained on Kinetics-400.
 
-(step-by-step instructions coming soon)
+Follow the instructions in [data_preparation/README.md](https://github.com/AdrienneDeganutti/DANTE-AD/blob/main/data_preparation/README.md)
 
 We provide our pre-computed scene-level features in the Dataset section.
 
