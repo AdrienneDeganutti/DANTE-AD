@@ -13,6 +13,11 @@ model:
 
 datasets:
   cmd_AD:
+    vis_processor:
+      train:
+        name: "alpro_video_eval"
+        n_frms: 8
+        image_size: 224
     text_processor:
       train:
         name: "blip_caption"

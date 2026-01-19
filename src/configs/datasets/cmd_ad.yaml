@@ -6,3 +6,4 @@ datasets:
       train_anno_dir: path/to/train.tsv
       s4v_features: path/to/s4v-features/folder/
       video_qformer_ft: path/to/video_qformer_features/folder/
+      videos_dir: path/to/videos/folder/
