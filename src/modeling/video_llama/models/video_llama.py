@@ -7,6 +7,7 @@
 import torch
 import torch.nn as nn
 
+import einops
 from rich.console import Console
 from rich.table import Table
 
@@ -15,8 +16,11 @@ from src.modeling.video_llama.models.blip2 import Blip2Base
 from src.modeling.fusion_module.cross_attention import CaptionGenerator
 from src.modeling.utils.freeze import(freeze_proj, unfreeze_proj, freeze_llama,
                                         freeze_s4v_proj, unfreeze_s4v_proj, 
-                                        freeze_multihead_attn, unfreeze_multihead_attn)
+                                        freeze_multihead_attn, unfreeze_multihead_attn,
+                                        freeze_vit, freeze_qformer, unfreeze_qformer,
+                                        freeze_video_qformer, unfreeze_video_qformer)
 from src.modeling.video_llama.models.modeling_llama import LlamaForCausalLM
+from src.modeling.video_llama.models.Qformer import BertConfig, BertLMHeadModel
 
 from transformers import(
     LlamaTokenizer,
@@ -31,6 +35,24 @@ class VideoLLAMA(Blip2Base):
         "pretrain_llama_v2": "configs/video_llama/video_llama.yaml",
     }
 
+
+    @classmethod
+    def init_video_Qformer(cls, num_query_token, vision_width, num_hidden_layers=2):
+        encoder_config = BertConfig.from_pretrained("bert-base-uncased")
+        encoder_config.num_hidden_layers = num_hidden_layers
+        encoder_config.encoder_width = vision_width
+        # insert cross-attention at every layer 
+        encoder_config.add_cross_attention = True
+        encoder_config.cross_attention_freq = 1
+        encoder_config.query_length = num_query_token
+        Qformer = BertLMHeadModel(config=encoder_config)
+        query_tokens = nn.Parameter(
+            torch.zeros(1, num_query_token, encoder_config.hidden_size)
+        )
+        query_tokens.data.normal_(mean=0.0, std=encoder_config.initializer_range)
+        return Qformer, query_tokens
+
+
     def __init__(self, videollama_config):
         super().__init__()
         
@@ -39,6 +61,46 @@ class VideoLLAMA(Blip2Base):
         self.max_txt_len = self.videollama_config.max_txt_len
         
         console.rule("[bold yellow]Initializing VideoLLAMA Modules")
+
+        if not self.videollama_config.load_frame_features:
+            console.print("[bold cyan]Loading Vision Transformer...[/bold cyan]")
+            self.visual_encoder, self.ln_vision = self.init_vision_encoder(
+                self.videollama_config.vit_model, self.videollama_config.img_size, self.videollama_config.drop_path_rate,
+                self.videollama_config.use_grad_checkpoint, self.videollama_config.vit_precision)
+            if self.videollama_config.freeze_vit:
+                freeze_vit(self.visual_encoder, self.ln_vision)
+
+            console.print("[bold cyan]Loading Q-Former...[/bold cyan]")
+            self.Qformer, self.query_tokens = self.init_Qformer(
+                self.videollama_config.num_query_token, self.visual_encoder.num_features)
+            self.Qformer.cls = None
+            self.Qformer.bert.embeddings.word_embeddings = None
+            self.Qformer.bert.embeddings.position_embeddings = None
+            for layer in self.Qformer.bert.encoder.layer:
+                layer.output = None
+                layer.intermediate = None
+            self.load_from_pretrained(url_or_filename=self.videollama_config.q_former_model)
+            if self.videollama_config.freeze_qformer:
+                freeze_qformer(self.Qformer, self.query_tokens)
+            else:
+                unfreeze_qformer(self.Qformer, self.query_tokens)
+            
+            self.video_frame_position_embedding = nn.Embedding(self.videollama_config.max_frame_pos, self.Qformer.config.hidden_size)
+            self.video_frames_position_embedding = nn.Embedding(self.videollama_config.num_subsampled_frames, self.Qformer.config.hidden_size)
+
+            console.print("[bold cyan]Loading Video Q-Former...[/bold cyan]")
+            self.video_Qformer,self.video_query_tokens = self.init_video_Qformer(num_query_token = videollama_config.num_video_query_token,
+                vision_width=self.Qformer.config.hidden_size, num_hidden_layers=2)
+            self.video_Qformer.cls = None
+            self.video_Qformer.bert.embeddings.word_embeddings = None
+            self.video_Qformer.bert.embeddings.position_embeddings = None
+            for layer in self.video_Qformer.bert.encoder.layer:
+                layer.output = None
+                layer.intermediate = None
+            if videollama_config.frozen_video_Qformer:
+                freeze_video_qformer(self.video_Qformer, self.video_frames_position_embedding, self.video_query_tokens)
+            else:
+                unfreeze_video_qformer(self.video_Qformer, self.video_frames_position_embedding, self.video_query_tokens)
 
         console.print("[bold cyan]Loading LLaMA Tokenizer...[/bold cyan]")
         if self.videollama_config.llama_model == 'meta-llama/Llama-2-7b-hf':
@@ -111,6 +173,10 @@ class VideoLLAMA(Blip2Base):
         def is_frozen(model):
             return all(not p.requires_grad for p in model.parameters())
 
+        if not self.videollama_config.load_frame_features:
+            table.add_row("Vision Transformer", str(is_frozen(self.visual_encoder)), param_count(self.visual_encoder))
+            table.add_row("Q-Former", str(is_frozen(self.Qformer)), param_count(self.Qformer))
+            table.add_row("Video Q-Former", str(is_frozen(self.video_Qformer)), param_count(self.video_Qformer))
         table.add_row("LLaMA Model", str(is_frozen(self.llama_model)), param_count(self.llama_model))
         table.add_row("LLaMA Projection", str(is_frozen(self.llama_proj)), param_count(self.llama_proj))
         table.add_row("S4V Projection", str(is_frozen(self.s4v_proj)), param_count(self.s4v_proj))
@@ -119,11 +185,14 @@ class VideoLLAMA(Blip2Base):
         console.print(table)
     
 
-    def forward(self, vid_qformer_ft, annotation, s4v_ft):
+    def forward(self, frame_fts, annotation, s4v_ft):
         
-        # EVA-CLIP features
-        vid_qformer_ft = vid_qformer_ft.squeeze(dim=1)
-        img_embeds = self.llama_proj(vid_qformer_ft)
+        if self.videollama_config.load_frame_features:
+            # EVA-CLIP features
+            frame_fts = frame_fts.squeeze(dim=1)
+            img_embeds = self.llama_proj(frame_fts)
+        else:
+            img_embeds = self.encode_Qformer_visual(frame_fts)
 
         # S4V features
         s4v_features = self.s4v_proj(s4v_ft)
@@ -143,7 +212,7 @@ class VideoLLAMA(Blip2Base):
         ).to(self.device)
         to_regress_embeds = self.llama_model.model.embed_tokens(to_regress_tokens.input_ids)
 
-        batch_size = vid_qformer_ft.shape[0]
+        batch_size = frame_fts.shape[0]
         bos = torch.ones([batch_size, 1],
                         dtype=to_regress_tokens.input_ids.dtype,
                         device=self.device) * self.llama_tokenizer.bos_token_id
@@ -236,6 +305,54 @@ class VideoLLAMA(Blip2Base):
             
             return generated_texts, generated_ids, targets
     
+
+    def encode_Qformer_visual(self, image):
+        device = image.device
+        
+        # input shape b,c,t,h,w
+        batch_size,_,time_length,_,_ = image.size()
+        image = einops.rearrange(image, 'b c t h w -> (b t) c h w')
+        with self.maybe_autocast():
+            # embed image features with blip2, out: (b t) q h
+            image_embeds = self.ln_vision(self.visual_encoder(image)).to(device)
+            image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(device)
+
+            query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
+            query_output = self.Qformer.bert(
+                query_embeds=query_tokens,
+                encoder_hidden_states=image_embeds,
+                encoder_attention_mask=image_atts,
+                return_dict=True,
+            )
+
+            # add frame_pos embedding
+            position_ids = torch.arange(time_length, dtype=torch.long, device=query_tokens.device)
+            position_ids = position_ids.unsqueeze(0).expand(batch_size, -1)
+            frame_position_embeddings = self.video_frame_position_embedding(position_ids)
+            q_hidden_state = query_output.last_hidden_state
+
+            frame_position_embeddings = frame_position_embeddings.unsqueeze(-2)
+            frame_hidden_state = einops.rearrange(q_hidden_state, '(b t) q h -> b t q h',b=batch_size,t=time_length)
+            frame_hidden_state = frame_position_embeddings + frame_hidden_state
+
+            # frame attention
+            frame_hidden_state =  einops.rearrange(frame_hidden_state, 'b t q h -> b (t q) h',b=batch_size,t=time_length)
+            frame_atts = torch.ones(frame_hidden_state.size()[:-1], dtype=torch.long).to(device)
+            video_query_tokens = self.video_query_tokens.expand(frame_hidden_state.shape[0], -1, -1)
+
+            video_query_output = self.video_Qformer.bert(
+                query_embeds=video_query_tokens,
+                encoder_hidden_states=frame_hidden_state,
+                encoder_attention_mask=frame_atts,
+                return_dict=True,
+                )
+            video_hidden = video_query_output.last_hidden_state
+
+            inputs_llama = self.llama_proj(video_hidden)
+            inputs_llama = inputs_llama.float()
+
+        return inputs_llama
+
 
     @classmethod
     def from_config(cls, cfg, videollama_config):

@@ -20,12 +20,17 @@ def eval_loop(model, args, data, epoch):
     with torch.no_grad():
         for batch in data:
             
-            vid_qformer_ft, annotations, filename, s4v_features = batch["vid_qformer_ft"], batch["caption"], batch["filename"], batch["s4v_features"]
+            frame_fts, annotations, filename, s4v_features = batch["frame_fts"], batch["caption"], batch["filename"], batch["s4v_features"]
 
-            vid_qformer_ft = vid_qformer_ft.to('cuda:{}'.format(args.gpu_id))
+            if args.load_frame_features:
+                assert frame_fts.shape == (1, 1, 32, 768)
+            else:
+                assert frame_fts.shape == (1, 3, 8, 224, 224)
+
+            frame_fts = frame_fts.to('cuda:{}'.format(args.gpu_id))
             s4v_features = s4v_features.to('cuda:{}'.format(args.gpu_id))
 
-            generated_texts, generated_ids, targets = model(vid_qformer_ft, annotations, s4v_features)
+            generated_texts, generated_ids, targets = model(frame_fts, annotations, s4v_features)
 
             accuracy = compute_acc(generated_ids, targets)
             total_acc += accuracy.item()
