@@ -10,8 +10,8 @@ data:
     workers: 4
     num_classes: 400
     image_tmpl: 'img_{:05d}.jpg'
-    val_root: DANTE-AD/data_preparation/
-    val_list: DANTE-AD/data_preparation/lists/cmd_ad/video_paths.txt
+    val_root: ../
+    val_list: lists/cmd_ad/video_paths.txt
     input_size: 224
     random_shift: False
     num_sample: 1

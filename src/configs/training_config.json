@@ -1,5 +1,5 @@
 {
-  "do_train": true,
+  "do_train": false,
   "do_eval": true,
 
   "load_frame_features": true,
@@ -39,8 +39,8 @@
   "fusion_head_layers": 2,
   "num_video_query_token": 32,
   
-  "output_ckpt_path": "/location/to/save/ckpts/",
-  "output_results_path": "/location/to/save/predictions/",
+  "output_ckpt_path": "checkpoints/",
+  "output_results_path": "results/",
 
   "video_llama_cfg_path": "src/configs/video_llama/model_config.yaml",
   "model_type": "llama_v2",
