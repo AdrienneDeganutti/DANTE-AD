@@ -172,3 +172,42 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# macOS
+.DS_Store
+._*
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.GMACFileID*
+.HotFiles*
+.Knowledge
+.KQueue
+.Network
+.PKInstallSandboxManager
+.SYStore_
+.SystemFiles
+.Trashes
+.com.apple.timemachine.donotpresent
+.apdisk
+*~
+
+# Data files and checkpoints
+*.mkv
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.tsv
+*.txt
+checkpoints/
+features/
+data_preparation/ckpt/
+data_preparation/clip_pretrain/
+data_preparation/lists/
+data_preparation/output/
+data_preparation/*.pyc
+data_preparation/__pycache__/
+
+# Notes
+notes
