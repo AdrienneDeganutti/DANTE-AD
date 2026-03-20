@@ -167,7 +167,10 @@ def main(args):
         dense_sample=args.dense,
         test_clips=args.test_clips)
 
-    val_sampler = torch.utils.data.distributed.DistributedSampler(val_data)
+    if args.distributed:
+        val_sampler = torch.utils.data.distributed.DistributedSampler(val_data)
+    else:
+        val_sampler = None
     val_loader = DataLoader(val_data,
         batch_size=config.data.batch_size,num_workers=config.data.workers,
         sampler=val_sampler, pin_memory=True, drop_last=False)
@@ -177,7 +180,7 @@ def main(args):
 
     if os.path.isfile(args.weights):
         checkpoint = torch.load(args.weights, map_location='cpu')
-        if dist.get_rank() == 0:
+        if not args.distributed or dist.get_rank() == 0:
             print('load model: epoch {}'.format(checkpoint['epoch']))
 
         model_full.load_state_dict(update_dict(checkpoint['model_state_dict']))
@@ -189,13 +192,13 @@ def main(args):
     validate(
         val_loader, device, 
         model_full, config, args.test_crops, args.test_clips,
-        args.output_dir)
+        args.output_dir, args.distributed)
     
     return
 
 
 
-def validate(val_loader, device, model, config, test_crops, test_clips, output_dir):
+def validate(val_loader, device, model, config, test_crops, test_clips, output_dir, distributed=False):
 
     model.eval()
 
@@ -212,12 +215,13 @@ def validate(val_loader, device, model, config, test_crops, test_clips, output_d
             b, t, c, h, w = image.size()
             image_input = image.to(device).view(-1, c, h, w)
 
-            features = model.module.extract_features(image_input)  # Extract features
+            features = model.module.extract_features(image_input) if hasattr(model, 'module') else model.extract_features(image_input)  # Extract features
+            features = features.unsqueeze(1)  # Add time dimension: [batch, 1, 320]
             
             save_features_as_pt(features, directory[0], output_dir)
 
 
-    if dist.get_rank() == 0:
+    if not distributed or dist.get_rank() == 0:
         print('-----Evaluation is finished------')
 
 
