@@ -5,8 +5,8 @@ model:
   # If you want use LLaMA-2-chat,
   # some ckpts could be download from our provided huggingface repo
   # i.e.  https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Finetuned
-  llama_model: "meta-llama/Llama-2-7b-hf"
-  ckpt: "/PATH/TO/YOUR/CKPT"
+  llama_model: "data/ad3_moviellama2_ce_iter14000.pth.tar"
+  ckpt:  "./data/model-ckpt.pth.tar"
   ckpt_2: ""  # Optional
   equip_audio_branch: False
 
