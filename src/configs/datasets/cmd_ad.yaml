@@ -2,8 +2,7 @@ datasets:
   cmd_AD:
     data_type: video
     build_info:
-      val_anno_dir: path/to/eval.tsv
-      train_anno_dir: path/to/train.tsv
-      s4v_features: path/to/s4v-features/folder/
-      video_qformer_ft: path/to/video_qformer_features/folder/
-      videos_dir: path/to/videos/folder/
+      val_anno_dir: data/ownfeatures/eval.tsv
+      train_anno_dir: data/ownfeatures/eval.tsv
+      s4v_features: data/ownfeatures/s4v/
+      video_qformer_ft: data/ownfeatures/video_qformer_features/
