@@ -1,9 +1,9 @@
 {
-  "do_train": true,
+  "do_train": false,
   "do_eval": true,
-
-  "load_frame_features": true,
-  
+ 
+  "load_frame_features": false,
+   
   "drop_path_rate": 0,
   "img_size": 224,
   "vit_model": "eva_clip_g",
@@ -47,4 +47,3 @@
   "gpu-id": 0,
   "options": null
 }
-  

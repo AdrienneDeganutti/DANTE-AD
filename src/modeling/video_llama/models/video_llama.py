@@ -138,7 +138,7 @@ class VideoLLAMA(Blip2Base):
         )
         if self.videollama_config.llama_proj_model:
             print("load llama proj weight: {}".format(self.videollama_config.llama_proj_model))
-            llama_proj_weight = torch.load(self.videollama_config.llama_proj_model, map_location="cpu")
+            llama_proj_weight = torch.load(self.videollama_config.llama_proj_model, map_location="cpu", weights_only=False)
             msg = self.load_state_dict(llama_proj_weight['model'], strict=False)
         if self.videollama_config.frozen_llama_proj:
             freeze_proj(self.llama_proj)
@@ -196,7 +196,8 @@ class VideoLLAMA(Blip2Base):
 
         # S4V features
         s4v_features = self.s4v_proj(s4v_ft)
-
+        # I got some error of an extra dimension, so I quickly add this to see if it helps...
+        s4v_features = s4v_features.squeeze(1)
         # Ground truth text processing
         self.llama_tokenizer.padding_side = "right"
 
@@ -361,13 +362,13 @@ class VideoLLAMA(Blip2Base):
         ckpt_path = cfg.get("ckpt", "")
         if ckpt_path:
             print("Loading first checkpoint: {}".format(ckpt_path))
-            ckpt = torch.load(ckpt_path, map_location="cpu")
+            ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
             msg = model.load_state_dict(ckpt['state_dict'], strict=False)
         
         ckpt_path_2 = cfg.get("ckpt_2", "")  
         if ckpt_path_2:
             print("Loading second checkpoint: {}".format(ckpt_path_2))
-            ckpt = torch.load(ckpt_path_2, map_location="cpu")
+            ckpt = torch.load(ckpt_path_2, map_location="cpu", weights_only=False)
             msg = model.load_state_dict(ckpt, strict=False)
 
         return model
